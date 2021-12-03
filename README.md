@@ -3,7 +3,7 @@ Post Processing Effect that mimics light getting scattered though fog for your m
 
 Based on the [Keijiro Takahashi's Streak Effect](https://github.com/keijiro/Kino) and [SSMS by OCASM](https://github.com/OCASM/SSMS).
 
-If you use this effect in your project, feel free to let us know on [twitter](https://twitter.com/byteslider)
+If you use this effect in your project, feel free to let us know on [twitter](https://twitter.com/byteslider).
 
 Examples
 -
