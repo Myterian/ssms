@@ -1,4 +1,4 @@
-﻿Shader "Hidden/PostProcessing/SSMS"
+Shader "Hidden/PostProcessing/SSMS"
 {
 	HLSLINCLUDE
 
@@ -13,6 +13,7 @@
     float4 _CameraDepthTexture_TexelSize;
 	float _StartDistance;
     float _Density;
+    float _Scatter;
 	float _Blend;
 	float _Intensity;
 	half3 _Color;
@@ -24,7 +25,7 @@
 
         // "Scale and offset" basically
         depth = max( 0, depth - _StartDistance);
-        depth = saturate( depth - 0.99 * depth );
+        depth = saturate( depth - _Density * depth );
 
         return depth;
     }
@@ -94,7 +95,7 @@
             c4 += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv + d.xy).rgb;     // -1, -1
 
             half3 c = c4 / 16;
-            return half4( highTex + c * ( 1 + _Density ), 1) / ( 1 + ( _Density * 0.735));
+            return half4( highTex + c * ( 1 + _Scatter ), 1) / ( 1 + ( _Scatter * 0.735));
 
         #else
 
@@ -106,7 +107,7 @@
             half3 c3 = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv + d.zw).rgb; //  1,  1
 
             half3 c = ( c0 + c1 + c2 + c3 ) / 4;
-            return half4( highTex + c * ( 1 + _Density ), 1) / ( 1 + ( _Density * 0.735));
+            return half4( highTex + c * ( 1 + _Scatter ), 1) / ( 1 + ( _Scatter * 0.735));
         #endif
 	}
 
