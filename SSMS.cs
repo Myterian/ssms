@@ -12,27 +12,30 @@ namespace byteslider.PostProcessing.SSMS
         [ Tooltip( "How far off in the distance the effect should start in world units" ) ]
         public FloatParameter startDistance = new FloatParameter { value = 15f };
 
-        [ Tooltip( "How dense the fog is. Affects how much the light gets scattered" ) ]
-        [Range(0, 5)] public FloatParameter density = new FloatParameter { value = 3f };
+        [ Tooltip( "Controls how much the fog is overlayed on the scene. Helps to blend the fog in or out, which works best with a density of 0" ), Range(0, 1) ]
+        public FloatParameter blend = new FloatParameter { value = 1f };
 
-        [ Tooltip( "Controls how much the fog is overlayed on the scene. Helps to blend the fog in or out, which works best with a density of 0" ) ]
-        [Range(0, 1)] public FloatParameter blend = new FloatParameter { value = 1f };
+        [ Tooltip( "How dense the fog is. Affects how harsh the fog starts at the starting distance" ), Range( 0, 0.999f ) ]
+        public FloatParameter density = new FloatParameter { value = 0.035f };
 
-        [ Tooltip( "Controls how much light is preserved. Less values mean more energy loss of the light" ) ]
-        [Range(0, 1)] public FloatParameter intensity = new FloatParameter { value = 0.05f };
+        [ Tooltip( "Affects how much the light gets scattered" ), Range(0, 5) ]
+        public FloatParameter scattering = new FloatParameter { value = 5f };
 
-        [ Tooltip( "Fog tint. Brightness also contributes to intensity" ) ]
-        [ColorUsage(false)] public ColorParameter tint = new ColorParameter { value = new Color( 0.262f, 0.298f, 0.33f ) };
-        
+        [ Tooltip( "Controls how much light is preserved. Less values mean more energy loss of the light" ), Range(0, 1) ]
+        public FloatParameter intensity = new FloatParameter { value = 0.05f };
+
+        [ Tooltip( "Fog tint. Brightness also contributes to intensity" ), ColorUsage(false) ]
+        public ColorParameter tint = new ColorParameter { value = new Color( 0.262f, 0.298f, 0.33f ) };
+
         [ Header("Performance") ]
-        
+
         [ Tooltip( "Should the effect use a high quality blur or not" ) ]
         public BoolParameter highQuality = new BoolParameter { value = true };
 
         [ Tooltip( "Uses half as many samples as the effect normally would" ) ]
         public BoolParameter fastMode = new BoolParameter { value = false };
-        
-        [UnityEngine.Rendering.PostProcessing.Min(0), Tooltip( "Custom setting for how many samples should be used" )] 
+
+        [Tooltip( "Custom setting for how many samples should be used" ), UnityEngine.Rendering.PostProcessing.Min(0)] 
         public IntParameter customQuality = new IntParameter { value = 0 };
 
         #if UNITY_EDITOR
@@ -51,6 +54,7 @@ namespace byteslider.PostProcessing.SSMS
         {
             internal static readonly int StartDistance = Shader.PropertyToID("_StartDistance");
             internal static readonly int Density = Shader.PropertyToID("_Density");
+            internal static readonly int Scatter = Shader.PropertyToID("_Scatter");
             internal static readonly int Blend = Shader.PropertyToID("_Blend");
             internal static readonly int Intensity = Shader.PropertyToID("_Intensity");
             internal static readonly int Color = Shader.PropertyToID("_Color");
@@ -83,7 +87,8 @@ namespace byteslider.PostProcessing.SSMS
             // Shader uniforms
             var sheet = context.propertySheets.Get(Shader.Find("Hidden/PostProcessing/SSMS"));
             sheet.properties.SetFloat(ShaderPropertyID.StartDistance, settings.startDistance);
-            sheet.properties.SetFloat(ShaderPropertyID.Density, settings.density);
+            sheet.properties.SetFloat(ShaderPropertyID.Density, 1 - settings.density);
+            sheet.properties.SetFloat(ShaderPropertyID.Scatter, settings.scattering);
             sheet.properties.SetColor(ShaderPropertyID.Color, settings.tint);
 
             // Easier to control transition for blend. Otherwise you need to fiddle with .997 - .999 values
