@@ -20,4 +20,4 @@ Built-in Fog + SSMS + Bloom
 
 Known Issues
 -
-The effect will not enclose transparent objects. That avoids artifact with TAA and transparent object disappearing in the fog, even if they're in the foreground. This can be changed by setting PostProcessEvent.BeforeTransparent to PostProcessEvent.BeforeStack. 
+The effect will not enclose transparent objects. That avoids artifact with TAA and transparent object disappearing in the fog, even if they're in the foreground. This can be changed by setting ```PostProcessEvent.BeforeTransparent``` to ```PostProcessEvent.BeforeStack```. 
